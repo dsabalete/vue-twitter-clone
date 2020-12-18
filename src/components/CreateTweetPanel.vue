@@ -25,9 +25,8 @@
                     >
                 </select>
             </div>
+            <button>Tweet!</button>
         </div>
-
-        <button>Tweet!</button>
     </form>
 </template>
 
