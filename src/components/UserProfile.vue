@@ -8,35 +8,7 @@
             <div class="user-profile__follower-count">
                 <strong>Followers: {{ followers }}</strong>
             </div>
-            <form
-                class="user-profile__create-tweet"
-                @submit.prevent="createNewTweet"
-                :class="{ '--exceded': newTweetCharacterCount > 180 }"
-            >
-                <label for="newTweet">
-                    <strong>New Tweet</strong> ({{ newTweetCharacterCount }} /
-                    180)
-                </label>
-                <textarea
-                    id="newTweet"
-                    rows="4"
-                    v-model="newTweetContent"
-                ></textarea>
-
-                <div class="user-profile__create-tweet-type">
-                    <label for="netTweetType"><strong>Type</strong></label>
-                    <select id="newTweetType" v-model="selectedTweetType">
-                        <option
-                            :value="option.value"
-                            v-for="(option, index) in tweetTypes"
-                            :key="index"
-                            >{{ option.name }}</option
-                        >
-                    </select>
-                </div>
-
-                <button>Tweet!</button>
-            </form>
+            <CreateTweetPanel @add-tweet="addTweet" />
         </div>
         <div class="user-profile__tweets-wrapper">
             <TweetItem
@@ -44,7 +16,6 @@
                 :key="tweet.id"
                 :username="user.username"
                 :tweet="tweet"
-                @favourite="toggleFavourite"
             />
         </div>
     </div>
@@ -52,27 +23,23 @@
 
 <script>
 import TweetItem from './TweetItem.vue'
+import CreateTweetPanel from './CreateTweetPanel.vue'
 
 export default {
     name: 'UserProfile',
     components: {
         TweetItem,
+        CreateTweetPanel,
     },
     data() {
         return {
-            newTweetContent: '',
-            selectedTweetType: 'instant',
-            tweetTypes: [
-                { value: 'draft', name: 'Draft' },
-                { value: 'instant', name: 'Instant Tweet' },
-            ],
             followers: 0,
             user: {
                 id: 1,
-                username: '_dsabalete',
-                firstName: 'David',
-                lastName: 'sabalete',
-                email: 'dsabalete@hotmail.com',
+                username: 'owkenobi',
+                firstName: 'Obi-Wan',
+                lastName: 'Kenobi',
+                email: 'owkenobi@hotmail.com',
                 isAdmin: true,
                 tweets: [
                     {
@@ -87,41 +54,13 @@ export default {
             },
         }
     },
-    watch: {
-        followers(newFollowerCount, oldFollowerCount) {
-            if (oldFollowerCount < newFollowerCount) {
-                console.log(`${this.user.username} has gained a follower`)
-            }
-        },
-    },
-    computed: {
-        fullName() {
-            return `${this.user.firstName} ${this.user.lastName}`
-        },
-        newTweetCharacterCount() {
-            return this.newTweetContent.length
-        },
-    },
     methods: {
-        followUser() {
-            this.followers++
+        addTweet(tweet) {
+            this.user.tweets.unshift({
+                id: this.user.tweets.length + 1,
+                content: tweet,
+            })
         },
-        toggleFavourite(id) {
-            console.log(`Favourite Tweet ${id}`)
-        },
-        createNewTweet() {
-            console.log(this.selectedTweetType)
-            if (this.newTweetContent && this.selectedTweetType !== 'draft') {
-                this.user.tweets.unshift({
-                    id: this.user.tweets.length + 1,
-                    content: this.newTweetContent,
-                })
-                this.newTweetContent = ''
-            }
-        },
-    },
-    mounted() {
-        this.followUser()
     },
 }
 </script>
@@ -140,6 +79,7 @@ export default {
         background-color: white;
         border-radius: 5px;
         border: 1px solid $paleWhite;
+        margin-bottom: auto;
 
         h1 {
             margin: 0;
@@ -153,27 +93,12 @@ export default {
             padding: 0 10px;
             font-weight: bold;
         }
-
-        .user-profile__create-tweet {
-            padding-top: 20px;
-            display: flex;
-            flex-direction: column;
-
-            &.--exceded {
-                color: red;
-                border-color: red;
-                button {
-                    background-color: red;
-                    border: none;
-                    color: white;
-                }
-            }
-        }
     }
 
     .user-profile__tweet-wrapper {
         display: grid;
         grid-gap: 10px;
+        margin-bottom: auto;
     }
 }
 </style>
