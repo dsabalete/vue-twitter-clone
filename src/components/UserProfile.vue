@@ -11,9 +11,11 @@
             <form
                 class="user-profile__create-tweet"
                 @submit.prevent="createNewTweet"
+                :class="{ '--exceded': newTweetCharacterCount > 180 }"
             >
                 <label for="newTweet">
-                    <strong>New Tweet</strong>
+                    <strong>New Tweet</strong> ({{ newTweetCharacterCount }} /
+                    180)
                 </label>
                 <textarea
                     id="newTweet"
@@ -96,6 +98,9 @@ export default {
         fullName() {
             return `${this.user.firstName} ${this.user.lastName}`
         },
+        newTweetCharacterCount() {
+            return this.newTweetContent.length
+        },
     },
     methods: {
         followUser() {
@@ -121,44 +126,54 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .user-profile {
     display: grid;
     grid-template-columns: 1fr 3fr;
     grid-gap: 50px;
     padding: 50px 5%;
-}
 
-.user-profile__user-panel {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    background-color: white;
-    border-radius: 5px;
-    border: 1px solid #dfe3e8;
-}
+    .user-profile__user-panel {
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        background-color: white;
+        border-radius: 5px;
+        border: 1px solid $paleWhite;
 
-.user-profile__admin-badge {
-    background: rebeccapurple;
-    color: white;
-    border-radius: 5px;
-    margin-right: auto;
-    padding: 0 10px;
-    font-weight: bold;
-}
+        h1 {
+            margin: 0;
+        }
 
-h1 {
-    margin: 0;
-}
+        .user-profile__admin-badge {
+            background: rebeccapurple;
+            color: white;
+            border-radius: 5px;
+            margin-right: auto;
+            padding: 0 10px;
+            font-weight: bold;
+        }
 
-.user-profile__tweet-wrapper {
-    display: grid;
-    grid-gap: 10px;
-}
+        .user-profile__create-tweet {
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
 
-.user-profile__create-tweet {
-    padding-top: 20px;
-    display: flex;
-    flex-direction: column;
+            &.--exceded {
+                color: red;
+                border-color: red;
+                button {
+                    background-color: red;
+                    border: none;
+                    color: white;
+                }
+            }
+        }
+    }
+
+    .user-profile__tweet-wrapper {
+        display: grid;
+        grid-gap: 10px;
+    }
 }
 </style>
