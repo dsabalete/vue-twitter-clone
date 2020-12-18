@@ -3,9 +3,9 @@
         <h1>Home</h1>
         <div class="users-list">
             <router-link
-                v-for="(user, index) in users"
+                v-for="user in users"
                 :to="{ name: 'UserProfile', params: { userId: user.id } }"
-                :key="index"
+                :key="user.id"
             >
                 {{ user.username }}
             </router-link>
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { users } from '@/assets/users.js'
+import { users } from '@/assets/users'
 
 export default {
     name: 'Home',
