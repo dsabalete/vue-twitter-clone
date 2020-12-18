@@ -1,20 +1,20 @@
 <template>
     <div class="user-profile">
         <div class="user-profile__user-panel">
-            <h1 class="user-profile__username">@{{ user.username }}</h1>
-            <div class="user-profile__admin-badge" v-if="user.isAdmin">
+            <h1 class="user-profile__username">@{{ state.user.username }}</h1>
+            <div class="user-profile__admin-badge" v-if="state.user.isAdmin">
                 Admin
             </div>
             <div class="user-profile__follower-count">
-                <strong>Followers: {{ followers }}</strong>
+                <strong>Followers: {{ state.followers }}</strong>
             </div>
             <CreateTweetPanel @add-tweet="addTweet" />
         </div>
         <div class="user-profile__tweets-wrapper">
             <TweetItem
-                v-for="tweet in user.tweets"
+                v-for="tweet in state.user.tweets"
                 :key="tweet.id"
-                :username="user.username"
+                :username="state.user.username"
                 :tweet="tweet"
             />
         </div>
@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import { reactive } from 'vue'
 import TweetItem from './TweetItem.vue'
 import CreateTweetPanel from './CreateTweetPanel.vue'
 
@@ -31,8 +32,8 @@ export default {
         TweetItem,
         CreateTweetPanel,
     },
-    data() {
-        return {
+    setup() {
+        const state = reactive({
             followers: 0,
             user: {
                 id: 1,
@@ -52,15 +53,16 @@ export default {
                     },
                 ],
             },
-        }
-    },
-    methods: {
-        addTweet(tweet) {
-            this.user.tweets.unshift({
-                id: this.user.tweets.length + 1,
+        })
+
+        function addTweet(tweet) {
+            state.user.tweets.unshift({
+                id: state.user.tweets.length + 1,
                 content: tweet,
             })
-        },
+        }
+
+        return { state, addTweet }
     },
 }
 </script>
